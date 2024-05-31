@@ -18,7 +18,10 @@ if [ -z "$STREAM_URL" ]; then
     exit 1
 fi
 
-# Télécharger l'audio avec FFMpeg
-ffmpeg -i "$STREAM_URL" -q:a 0 -map a /output/audio.mp3
+# Générer un nom de fichier unique basé sur la date et l'heure actuelles
+FILENAME=$(date +"%Y%m%d_%H%M%S").mp3
 
-echo "Téléchargement et extraction de l'audio terminés."
+# Télécharger l'audio avec FFMpeg
+ffmpeg -i "$STREAM_URL" -q:a 0 -map a "/output/$FILENAME"
+
+echo "Téléchargement et extraction de l'audio terminés. Fichier sauvegardé sous le nom : $FILENAME"
