@@ -1,24 +1,25 @@
-# Utiliser une image de base avec Python et FFMpeg
-FROM python:3.9-slim
+FROM python:3.10-slim
 
-# Installer FFMpeg et Streamlink
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    && pip install streamlink \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Installer les dépendances nécessaires
+RUN apt-get update && \
+    apt-get install -y ffmpeg streamlink && \
+    apt-get clean
 
-# Créer un répertoire pour le script et l'audio
-RUN mkdir -p /app /output
-
-# Copier le script dans le conteneur
-COPY download_audio.sh /app/download_audio.sh
-
-# Donner les permissions d'exécution au script
-RUN chmod +x /app/download_audio.sh
-
-# Définir le répertoire de travail
+# Copier les fichiers du projet
 WORKDIR /app
+COPY app.py /app/app.py
+COPY download_audio.sh /app/download_audio.sh
+COPY static /app/static
 
-# Définir l'entrée du conteneur
-ENTRYPOINT ["/app/download_audio.sh"]
+# Rendre le script Bash exécutable
+RUN chmod +x download_audio.sh
+
+# Installer les dépendances Python
+COPY requirements.txt /app/
+RUN pip install -r requirements.txt
+
+# Exposer le port
+EXPOSE 8080
+
+# Démarrer le serveur CherryPy
+CMD ["python", "app.py"]

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Créer le répertoire /output si il n'existe pas
+cd app
+mkdir -p /output
+
 # Vérifier si l'URL est fournie
 if [ -z "$1" ]; then
     echo "Usage: $0 <URL_DE_LA_VIDEO_TWITCH>"
@@ -22,6 +26,7 @@ fi
 FILENAME=$(date +"%Y%m%d_%H%M%S").mp3
 
 # Télécharger l'audio avec FFMpeg
-ffmpeg -i "$STREAM_URL" -q:a 0 -map a "/output/$FILENAME"
+ffmpeg -i "$STREAM_URL" -q:a 0 -map a "/app/output/$FILENAME"
+
 
 echo "Téléchargement et extraction de l'audio terminés. Fichier sauvegardé sous le nom : $FILENAME"
